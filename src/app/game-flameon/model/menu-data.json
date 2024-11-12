@@ -1,0 +1,29 @@
+{
+    "menuItems": [
+      {
+        "id": "peri-chicken",
+        "name": "Peri Peri Chicken",
+        "ingredients": [
+          "burg-top",
+          "burg-cheese",
+          "burg-chicken",
+          "burg-lettuce",
+          "burg-sauce",
+          "burg-bottom"
+        ]
+      },
+      {
+        "id": "peri-chicken-etc",
+        "name": "Peri Chicken Etc",
+        "ingredients": [
+          "burg-top",
+          "burg-cheese",
+          "burg-chicken",
+          "burg-lettuce",
+          "burg-sauce",
+          "burg-bottom"
+        ]
+      }
+    ]
+  }
+  

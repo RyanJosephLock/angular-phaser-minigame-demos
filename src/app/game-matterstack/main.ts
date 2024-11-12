@@ -1,4 +1,4 @@
-import { AUTO, Game } from 'phaser';
+import { Game } from 'phaser';
 
 import Load from './scenes/load';
 import Play from './scenes/play';
@@ -12,11 +12,10 @@ const config: Phaser.Types.Core.GameConfig = {
     },
     autoRound: false,
     physics: {
-        default: "arcade",
-        arcade: {
-            gravity: { y: 300, x: 0 },
-            debug: true,
-        },
+        default: "matter",
+        matter: {
+            debug: true
+        }
     },
     backgroundColor: '#000',
     scene: [

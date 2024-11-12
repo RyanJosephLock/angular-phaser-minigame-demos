@@ -1,0 +1,26 @@
+{
+    "stack": {
+        "files": [
+            {
+                "type": "image",
+                "key": "coffeeCup",
+                "url": "game-xp/assets/coffeecup.png"
+            },
+            {
+                "type": "image",
+                "key": "ball",
+                "url": "game-xp/assets/bo-ball.png"
+            },
+            {
+                "type": "image",
+                "key": "paddle",
+                "url": "game-xp/assets/bo-paddle.png"
+            },
+            {
+                "type": "image",
+                "key": "block",
+                "url": "game-xp/assets/bo-block.jpg"
+            }
+        ]
+    }
+}

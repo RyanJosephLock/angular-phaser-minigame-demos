@@ -3,12 +3,12 @@ import Phaser from "phaser";
 import { StartGame } from './main';
 
 @Component({
-  selector: 'app-game-runner',
+  selector: 'app-game-fo',
   standalone: true,
   imports: [],
-  templateUrl: './game-xp.component.html'
+  template: '<div id="game-container"></div>'
 })
-export class GameXPComponent implements OnInit {
+export class GameFOComponent implements OnInit {
 
   game!: Phaser.Game;
 

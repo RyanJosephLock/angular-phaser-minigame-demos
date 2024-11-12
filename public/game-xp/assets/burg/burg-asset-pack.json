@@ -1,0 +1,36 @@
+{
+    "stack": {
+        "files": [
+            {
+                "type": "image",
+                "key": "burg-top",
+                "url": "game-xp/assets/burg/burg-top.png"
+            },
+            {
+                "type": "image",
+                "key": "burg-bottom",
+                "url": "game-xp/assets/burg/burg-bottom.png"
+            },
+            {
+                "type": "image",
+                "key": "burg-cheese",
+                "url": "game-xp/assets/burg/burg-cheese.png"
+            },
+            {
+                "type": "image",
+                "key": "burg-chicken",
+                "url": "game-xp/assets/burg/burg-chicken.png"
+            },
+            {
+                "type": "image",
+                "key": "burg-lettuce",
+                "url": "game-xp/assets/burg/burg-lettuce.png"
+            },
+            {
+                "type": "image",
+                "key": "burg-sauce",
+                "url": "game-xp/assets/burg/burg-sauce.png"
+            }
+        ]
+    }
+}
