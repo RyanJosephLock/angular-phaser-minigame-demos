@@ -7,7 +7,7 @@ import BuildManager from '../game/build-manager';
 
 export default class Play extends Phaser.Scene {
     private homework!: Homework;
-    private buildManager!: BuildManager;
+    public buildManager!: BuildManager;
 
     constructor() {
         super({ key: "play" });

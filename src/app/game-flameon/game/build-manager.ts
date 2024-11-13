@@ -1,5 +1,6 @@
 import Phaser from "phaser"
 
+import Play from "../scenes/play";
 import MenuData from "../model/menu-data.json";
 import { Menu, Item } from "../model/menu";
 
@@ -8,6 +9,7 @@ export default class BuildManager {
     private menu!: Menu;
     private menuItem!: Item;
     private menuItemTitle!: Phaser.GameObjects.Text;
+    public menuItemIngAnswers!: string[];
     private cycleImage!: Phaser.GameObjects.Image;
     private ingredientGroup!: Phaser.GameObjects.Group;
 
@@ -16,7 +18,6 @@ export default class BuildManager {
     private width!: number;
     private height!: number;
 
-    private testingCounter: number = 0; // TESTING ONLY
 
     constructor(scene: Phaser.Scene) {
         this.scene = scene;
@@ -69,7 +70,9 @@ export default class BuildManager {
     // BUILD LOGIC
 
     public createBuild(id: string) {
+        // get homework
         this.menuItem = this.menu.menuItems.find(item => item.id === id) as Item;
+        this.setIngredientAnswers();
 
         // update stage
         this.menuItemTitle.setText(this.menuItem.name);
@@ -79,7 +82,7 @@ export default class BuildManager {
 
     private cycleRotate(images: string[]) {
         if (images.length > 0) {
-            const cycleDelay = 400;
+            const cycleDelay = 1000;
             let i = 0; 
 
             const cycleNextIngredient = () => {
@@ -89,6 +92,8 @@ export default class BuildManager {
                 }
                 this.cycleImage.setTexture(images[i]);
                 this.scene.time.delayedCall(cycleDelay, cycleNextIngredient);
+
+                console.log(`Answer: ${this.menuItemIngAnswers[0]}`);   // TESTING ONLY
             };
 
             cycleNextIngredient();
@@ -96,29 +101,50 @@ export default class BuildManager {
     
     }
 
-    private selectIngredient(texture: string): void {
-        this.dropIngredient(this.contentX, this.contentY + 60, texture);
-        
-        this.testingCounter++;              // TESTING ONLY
-        console.log(this.testingCounter);   // TESTING ONLY
-        if(this.testingCounter == 4) {      // TESTING ONLY
-            this.explodeIngredients();      // TESTING ONLY
-            this.testingCounter = 0;        // TESTING ONLY
+    private selectIngredient(textureKey: string): void {
+        const isCorrect = this.checkAnswer(textureKey);
+        this.dropIngredient(this.contentX, this.contentY + 60, textureKey, isCorrect);
+    }
+
+    private checkAnswer(textureKey: string): boolean {
+        if (this.menuItemIngAnswers[0] === textureKey) {
+            this.menuItemIngAnswers.shift();
+            return true;
+        } else {
+            return false;
         }
     }
 
-    private dropIngredient(x: number, y: number, texture: string): void {
+    private dropIngredient(x: number, y: number, texture: string, isCorrect: boolean): void {
         const image = this.scene.matter.add.image(x, y, texture, undefined, {
             frictionAir: 0,
             restitution: 1.5
             })
-            .setScale(0.5, 0.5);
+            .setName(texture)
+            .setScale(0.5, 0.5)
+            .setData({ 'type': 'ingredient', 'isCorrect': isCorrect });
         this.ingredientGroup.add(image);
+        
+        // add collider to active ingredient (manually pass 'this' context)
+        const sceneRef = this.scene as Play
+        image.setOnCollide(this.handleActiveIngCollision.bind(sceneRef.buildManager));
+        
     }
 
-    private explodeIngredients() {
-        console.log('exploding!');  // TESTING ONLY
-    
+    private handleActiveIngCollision(data: Phaser.Types.Physics.Matter.MatterCollisionData): void {
+        // log collision objects
+        const { bodyA, bodyB } = data
+        const gameObjectA = bodyA.gameObject as Phaser.GameObjects.GameObject;
+        const gameObjectB = bodyB.gameObject as Phaser.GameObjects.GameObject;
+
+        // if answer wrong, explode on collision
+        if (gameObjectB.data.values['type'] === 'ingredient' && !gameObjectB.data.values['isCorrect']) {
+            this.explodeIngredients();
+        }
+
+    }
+
+    private explodeIngredients(): void {  
         const ingredientImages = this.ingredientGroup.getChildren();
         ingredientImages.reverse().forEach((image, index) => {
             const imageMjs = image as Phaser.Physics.Matter.Image;
@@ -132,12 +158,28 @@ export default class BuildManager {
             const randomYVelocity = Phaser.Math.Between(0, -3); 
             const forceVec2 = new Phaser.Math.Vector2(randomXVelocity, randomYVelocity);
         
-            // Apply the force with a delay (currently no delay between indexs)
-            this.scene.time.delayedCall(index * 0 + 500, () => {
+            // apply the force with a delay (currently no delay between indexs)
+            this.scene.time.delayedCall(index * 0, () => {
                 imageMjs.applyForceFrom(positionVec2, forceVec2);
-
+                this.scene.time.delayedCall(500, () => {
+                    this.resetIngredients();
+                });
             });
+
         });
     }
+
+    private resetIngredients(): void {
+        // rest group
+        this.ingredientGroup.clear(true, true);
+        // reset answers
+        this.setIngredientAnswers();
+    }
+
+    private setIngredientAnswers(): void {
+        console.log('RESET');           // TESTING ONLY
+        this.menuItemIngAnswers = [ ...this.menuItem.ingredients ].reverse();
+    }
+
     
 }

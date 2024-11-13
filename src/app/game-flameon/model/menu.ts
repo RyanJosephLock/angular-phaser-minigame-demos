@@ -7,4 +7,3 @@ export interface Item {
 export interface Menu {
     menuItems: Item[];
 }
-  
