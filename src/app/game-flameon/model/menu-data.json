@@ -3,18 +3,20 @@
       {
         "id": "peri-chicken",
         "name": "Peri Peri Chicken",
+        "extraValid": [0, 1, 1, 1, 1, 0],
         "ingredients": [
           "burg-top",
-          "burg-cheese",
-          "burg-chicken",
           "burg-lettuce",
           "burg-sauce",
+          "burg-cheese",
+          "burg-chicken",
           "burg-bottom"
         ]
       },
       {
         "id": "peri-chicken-etc",
         "name": "Peri Chicken Etc",
+        "extraValid": [0, 1, 1, 1, 1, 0],
         "ingredients": [
           "burg-top",
           "burg-cheese",
@@ -24,6 +26,11 @@
           "burg-bottom"
         ]
       }
+    ],
+    "extraItems": [
+      "extra-cdrom",
+      "extra-ninjastar",
+      "extra-rubberduck"
     ]
   }
   
