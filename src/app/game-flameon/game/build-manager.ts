@@ -1,7 +1,7 @@
 import Phaser from "phaser"
 
-import Play from "../scenes/play";
-import MenuData from "../model/menu-data.json";
+import Build2Play from "../scenes/build3-play";
+import MenuData from "../data/menu-data.json";
 import { Menu, Item } from "../model/menu";
 
 export default class BuildManager {
@@ -15,7 +15,7 @@ export default class BuildManager {
     private menuItemTurn: string[] = [];
     private menuItemTurnCount: number = 3;
     private menuItemTurnRotateDelay: number = 1000;
-    private menuItemTurnDelay: number = 500;
+    private menuItemResultDelay: number = 2000;
     private cycleImage!: Phaser.GameObjects.Image;
     private cycleStopRotate: Boolean = false;
     private ingredientGroup!: Phaser.GameObjects.Group;
@@ -90,29 +90,21 @@ export default class BuildManager {
         
     }
 
-    private showRecipeGuide() {
-
-    }
-
     private createExtraOptions() {
+        // get valid extras using matching indexs
          const menuItemExtras = this.menuItem.ingredients.filter((ingredient, index) => this.menuItem.extraValid[index] === 1);
          this.menuItemExtras = [ ...menuItemExtras, ...this.menu.extraItems ];
     }
 
     // build turn of current ingredient
     private createBuildTurn(): void {
-        if(this.menuItemAnswers.length > 0) {
-            this.createTurnArr(this.menuItemAnswers[0]);
-            this.rotateTurnArr();
-        } else {
-            // end build session, start a new one
-            console.log('end build session');       // TESTING ONLY
-        }
+        this.createTurnArr(this.menuItemAnswers[0]);
+        this.rotateTurnArr();
     }
 
     // turn array of ingredients to cycle through
     private createTurnArr(answerKey: string): void {
-        // add extra wrong answers (exc correct answer)
+        // add extra wrong answers exc correct answer)
         const menuItemExtrasCopy = this.menuItemExtras.filter(item => item !== answerKey);
         for (let i = 0; i < this.menuItemTurnCount - 1; i++) {
             const randomIndexExtras = Math.floor(Math.random() * menuItemExtrasCopy.length);
@@ -169,7 +161,7 @@ export default class BuildManager {
             this.ingredientGroup.add(image);
         
             // add collider to active ingredient (manually pass 'this' context)
-            const sceneRef = this.scene as Play
+            const sceneRef = this.scene as Build2Play
             image.setOnCollide(this.handleActiveIngCollision.bind(sceneRef.buildManager));
             
         }
@@ -178,23 +170,54 @@ export default class BuildManager {
         // hide rotateTurnArr on select
         this.toggleCycleImageSelector(false);
 
-        // handle next turn logic
-        if (this.menuItemAnswers && isCorrect) {
-            this.scene.time.delayedCall(this.menuItemTurnDelay, () => {
-                this.menuItemTurn = [];
-                this.toggleCycleImageSelector(true);
-                this.createBuildTurn();
-            })
+        let resultObj = { 
+            'type': '', 
+            'textureKey': '',
+            'nextFunc': () => {}
+        };
 
+        // set result type
+        if (this.menuItemAnswers.length != 0 && isCorrect) {
+            resultObj = {
+               'type': 'correct', 
+                'textureKey': 'splash-correct',
+                'nextFunc': () => {
+                    this.menuItemTurn = [];
+                    this.toggleCycleImageSelector(true);
+                    this.createBuildTurn();
+                }
+            };
         } else if (!isCorrect) {
-
-            // TO DO: Wrong answer, reset current build ------------------------------------------------
-
+            resultObj = {
+                'type': 'wrong', 
+                 'textureKey': 'splash-wrong',
+                 'nextFunc': () => {
+                     this.menuItemTurn = [];
+                     this.scene.scene.start('build1-recipe');
+                 }
+             };
         } else {
-
-            // TO DO: Completed build, get play scene to restart build process + ratchet up challenge ------------------------------------------------
-
+            resultObj = {
+                'type': 'done', 
+                 'textureKey': 'splash-done',
+                 'nextFunc': () => {
+                     this.menuItemTurn = [];
+                     this.scene.scene.start('build1-next');
+                 }
+             }; 
         }
+
+        // show and animate result image
+        const resultTextTemp = this.scene.add.text(this.contentX, this.contentY + 60, resultObj.textureKey).setOrigin(0.5, 0.5);
+        const resultImage = this.scene.add.image(this.contentX, this.contentY + 100, resultObj.textureKey);
+        console.log(`Result Type: ${JSON.stringify(resultObj.type)}`);       // TESTING ONLY
+
+        // next steps
+        this.scene.time.delayedCall(this.menuItemResultDelay, () => {    
+            resultTextTemp.destroy();
+            resultImage.destroy();
+            resultObj.nextFunc();
+        });
     }
 
     private toggleCycleImageSelector(isShow: boolean): void {
@@ -208,7 +231,7 @@ export default class BuildManager {
             this.cycleStopRotate = true;
         }
     }
-    
+
     private handleActiveIngCollision(data: Phaser.Types.Physics.Matter.MatterCollisionData): void {
         // log collision objects
         const { bodyA, bodyB } = data
@@ -260,84 +283,5 @@ export default class BuildManager {
     private createIngredientAnswers(): void {
         this.menuItemAnswers = [ ...this.menuItem.ingredients ].reverse();
     }
-
     
 }
-
-
-
-
-// TO DO: IMPLIMENT THIS SCREEN MANAGEMENT SYSTEM TO SWITCH BETWEEN RECIPE, BULID, WIN, ETC SCREENS
-
-// class ScreenManager {
-//     constructor() {
-//       this.screens = {};  // Store references to screens
-//       this.currentScreen = null;  // The current screen being displayed
-//     }
-  
-//     // Register a screen with a name and associated render function
-//     registerScreen(name, screen) {
-//       this.screens[name] = screen;
-//     }
-  
-//     // Switch to a new screen
-//     switchToScreen(name) {
-//       if (this.currentScreen) {
-//         this.currentScreen.exit();  // Call exit of the current screen
-//       }
-  
-//       const screen = this.screens[name];
-//       if (screen) {
-//         this.currentScreen = screen;
-//         screen.enter();  // Call enter of the new screen
-//       } else {
-//         console.error(`Screen ${name} not found!`);
-//       }
-//     }
-//   }
-
-//   // Define individual screens as objects with enter/exit functions
-//   const mainMenu = {
-//     enter: function() {
-//       console.log("Entering Main Menu");
-//       // Code to display the main menu screen, e.g., show/hide HTML elements
-//     },
-//     exit: function() {
-//       console.log("Exiting Main Menu");
-//       // Code to clean up the main menu, e.g., hide HTML elements
-//     }
-//   };
-  
-//   const gameplay = {
-//     enter: function() {
-//       console.log("Entering Gameplay");
-//       // Code to initialize and display gameplay screen
-//     },
-//     exit: function() {
-//       console.log("Exiting Gameplay");
-//       // Code to clean up the gameplay screen
-//     }
-//   };
-  
-//   const gameOver = {
-//     enter: function() {
-//       console.log("Entering Game Over");
-//       // Code to display the game over screen
-//     },
-//     exit: function() {
-//       console.log("Exiting Game Over");
-//       // Code to clean up the game over screen
-//     }
-//   };
-  
-//   // Initialize the screen manager and register screens
-//   const screenManager = new ScreenManager();
-//   screenManager.registerScreen("mainMenu", mainMenu);
-//   screenManager.registerScreen("gameplay", gameplay);
-//   screenManager.registerScreen("gameOver", gameOver);
-  
-//   // Example of switching between screens
-//   screenManager.switchToScreen("mainMenu"); // Starts at the main menu
-//   screenManager.switchToScreen("gameplay"); // Switches to gameplay
-//   screenManager.switchToScreen("gameOver"); // Switches to game over
-  

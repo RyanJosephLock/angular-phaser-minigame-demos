@@ -1,7 +1,10 @@
 import { Game } from 'phaser';
 
 import Load from './scenes/load';
-import Play from './scenes/play';
+import Hud from './scenes/hud';
+import Build1Next from './scenes/build1-next';
+import Build2Recipe from './scenes/build2-recipe';
+import Build3Play from './scenes/build3-play';
 
 const config: Phaser.Types.Core.GameConfig = {
     width: 420,
@@ -27,7 +30,10 @@ const config: Phaser.Types.Core.GameConfig = {
     backgroundColor: '#000',
     scene: [
         Load,
-        Play
+        Build1Next,
+        Build2Recipe,
+        Build3Play,
+        Hud
     ]
 }
 
