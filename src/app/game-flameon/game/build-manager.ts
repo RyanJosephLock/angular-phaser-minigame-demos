@@ -14,11 +14,12 @@ export default class BuildManager {
     private menuItemExtras!: string[];
     private menuItemTurn: string[] = [];
     private menuItemTurnCount: number = 3;
-    private menuItemTurnRotateDelay: number = 1000;
-    private menuItemResultDelay: number = 2000;
+    private menuItemTurnRotateDelay!: number;
+    private menuItemResultDelay: number = 1500;
     private cycleImage!: Phaser.GameObjects.Image;
     private cycleStopRotate: Boolean = false;
     private ingredientGroup!: Phaser.GameObjects.Group;
+    private scoreBanked: number = 0;
 
     private contentX!: number;
     private contentY!: number;
@@ -44,6 +45,14 @@ export default class BuildManager {
 
         // set stage
         this.setStage();
+
+        // get persistant data
+        const data = this.scene.registry.get('menuItemTurnRotateDelay');
+        if (data) {
+            this.menuItemTurnRotateDelay = data;
+        } else {
+            this.menuItemTurnRotateDelay = 1000;
+        }
     }
 
     // BUILD OBJECTS
@@ -170,6 +179,16 @@ export default class BuildManager {
         // hide rotateTurnArr on select
         this.toggleCycleImageSelector(false);
 
+        // emit corrent score
+        if (isCorrect) {
+            const ingredientScore = this.menuItem.ingredientScore;
+            this.emitScoreAdjustEvent(ingredientScore);
+            this.scoreBanked += ingredientScore;
+        } else {
+            this.emitScoreAdjustEvent(-this.scoreBanked);
+            this.scoreBanked = 0;
+        }
+
         let resultObj = { 
             'type': '', 
             'textureKey': '',
@@ -193,7 +212,7 @@ export default class BuildManager {
                  'textureKey': 'splash-wrong',
                  'nextFunc': () => {
                      this.menuItemTurn = [];
-                     this.scene.scene.start('build1-recipe');
+                     this.scene.scene.start('build2-recipe');
                  }
              };
         } else {
@@ -203,6 +222,9 @@ export default class BuildManager {
                  'nextFunc': () => {
                      this.menuItemTurn = [];
                      this.scene.scene.start('build1-next');
+                     this.emitScoreAdjustEvent(this.menuItem.finishScore);
+                     this.scoreBanked = 0;
+                     this.emitLevelAdjustEvent();
                  }
              }; 
         }
@@ -210,7 +232,6 @@ export default class BuildManager {
         // show and animate result image
         const resultTextTemp = this.scene.add.text(this.contentX, this.contentY + 60, resultObj.textureKey).setOrigin(0.5, 0.5);
         const resultImage = this.scene.add.image(this.contentX, this.contentY + 100, resultObj.textureKey);
-        console.log(`Result Type: ${JSON.stringify(resultObj.type)}`);       // TESTING ONLY
 
         // next steps
         this.scene.time.delayedCall(this.menuItemResultDelay, () => {    
@@ -282,6 +303,22 @@ export default class BuildManager {
 
     private createIngredientAnswers(): void {
         this.menuItemAnswers = [ ...this.menuItem.ingredients ].reverse();
+    }
+
+    private emitScoreAdjustEvent(scoreAdjust: number): void {
+        this.scene.events.emit('scoreAdjust', scoreAdjust);
+        if (scoreAdjust > 0) {
+            // happy visuals
+        } else if (scoreAdjust < 0) {
+            // sad visuals
+        }
+    }
+
+    private emitLevelAdjustEvent(): void {
+        this.scene.events.emit('levelAdjust');
+        // decrease rotation delay by 70%
+        this.menuItemTurnRotateDelay *= 0.7;
+        this.scene.registry.set('menuItemTurnRotateDelay', this.menuItemTurnRotateDelay);
     }
     
 }

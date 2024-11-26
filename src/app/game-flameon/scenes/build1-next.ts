@@ -23,9 +23,11 @@ export default class Build1Next extends Phaser.Scene {
         if (nextTask) {
             // set nextTask in registry and start scene
             this.registry.set('nextTask', nextTask);
-            this.scene.start('build1-recipe');
+            this.scene.start('build2-recipe');
         } else {
-            this.endGame();
+            // go to end if tasks complete
+            this.events.emit('hideHud');
+            this.scene.start('end');
         }
     }
     
@@ -43,8 +45,5 @@ export default class Build1Next extends Phaser.Scene {
         }
     }
     
-    private endGame() {
-        console.log(`end the game`);        // TESTING ONLY
-    }
 } 
 

@@ -9,11 +9,17 @@ export default class Build2Play extends Phaser.Scene {
     private nextTask!: Task;
     
     constructor() {
-        super({ key: 'build2-play' });
+        super({ key: 'build3-play' });
     }
 
     init() {
         this.buildManager = new BuildManager(this);
+
+        // listen for coundownEnd
+        this.events.on('countdownEnd', () => {
+            this.events.emit('hideHud');
+            this.scene.start('end');
+        });
     }
 
     create() {
@@ -22,9 +28,7 @@ export default class Build2Play extends Phaser.Scene {
 
         // systems and managers
         this.buildManager.createBuild(this.nextTask.id);
-
+        
     }
-
-    
 
 }

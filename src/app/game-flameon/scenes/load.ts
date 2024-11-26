@@ -1,8 +1,8 @@
-import HomeworkData from "../data/homework-data.json";
+import HomeworkData from '../data/homework-data.json';
 
 export default class Load extends Phaser.Scene {
     constructor() {
-        super({ key: "load"});
+        super({ key: 'load'});
     }
 
     preload() {

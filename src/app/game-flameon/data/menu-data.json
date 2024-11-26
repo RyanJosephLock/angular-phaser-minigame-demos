@@ -3,6 +3,8 @@
       {
         "id": "peri-chicken",
         "name": "Peri Peri Chicken",
+        "ingredientScore": 220,
+        "finishScore": 440, 
         "extraValid": [0, 1, 0],
         "ingredients": [
           "burg-top",
@@ -13,6 +15,8 @@
       {
         "id": "peri-chicken-etc",
         "name": "Peri Chicken Etc",
+        "ingredientScore": 220,
+        "finishScore": 440,
         "extraValid": [0, 1, 1, 1, 1, 0],
         "ingredients": [
           "burg-top",

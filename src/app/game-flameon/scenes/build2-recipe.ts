@@ -13,7 +13,7 @@ export default class Build1Recipe extends Phaser.Scene {
     private nextTask!: Task;
 
     constructor() {
-        super({ key: 'build1-recipe' });
+        super({ key: 'build2-recipe' });
     }
 
     init() {
@@ -40,7 +40,7 @@ export default class Build1Recipe extends Phaser.Scene {
     }
     
     private clickStartBuildPlay(): void {
-        this.scene.start('build2-play');
+        this.scene.start('build3-play');
     }
 
 
