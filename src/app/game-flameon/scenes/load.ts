@@ -1,3 +1,4 @@
+import Phaser from 'phaser';
 import HomeworkData from '../data/homework-data.json';
 
 export default class Load extends Phaser.Scene {
@@ -6,12 +7,16 @@ export default class Load extends Phaser.Scene {
     }
 
     preload() {
-        this.load.pack('burger', 'game-xp/assets/burg/burg-asset-pack.json', 'burger');
+        this.load.pack('misc', 'flame-on\pack-misc.json', 'misc');
+        this.load.pack('ing', 'flame-on\pack-ing.json', 'ing');
     }
 
     create() {
         // set homework data only once
         this.registry.set('homework', HomeworkData);
-        this.scene.start('build1-next');
+
+        // start
+        this.scene.start('start');
     }
+
 }

@@ -1,6 +1,7 @@
 import { Game } from 'phaser';
 
 import Load from './scenes/load';
+import Start from './scenes/start';
 import Hud from './scenes/hud';
 import Build1Next from './scenes/build1-next';
 import Build2Recipe from './scenes/build2-recipe';
@@ -31,6 +32,7 @@ const config: Phaser.Types.Core.GameConfig = {
     backgroundColor: '#000',
     scene: [
         Load,
+        Start,
         Build1Next,
         Build2Recipe,
         Build3Play,

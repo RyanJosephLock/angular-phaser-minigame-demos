@@ -1,0 +1,106 @@
+{
+    "misc": {
+        "files": [
+            {
+                "type": "image",
+                "key": "all-bg-high",
+                "url": "flame-on/misc/all-bg-high.jpg"
+            },
+            {
+                "type": "image",
+                "key": "build-answer-right",
+                "url": "flame-on/misc/build-answer-right.svg"
+            },
+            {
+                "type": "image",
+                "key": "build-answer-wrong",
+                "url": "flame-on/misc/build-answer-wrong.svg"
+            },
+            {
+                "type": "image",
+                "key": "build-tap-area",
+                "url": "flame-on/misc/build-tap-area.svg"
+            },
+            {
+                "type": "image",
+                "key": "button-make",
+                "url": "flame-on/misc/button-make.svg"
+            },
+            {
+                "type": "image",
+                "key": "button-remember",
+                "url": "flame-on/misc/button-remember.svg"
+            },
+            {
+                "type": "image",
+                "key": "button-start",
+                "url": "flame-on/misc/button-start.svg"
+            },
+            {
+                "type": "image",
+                "key": "cursive-recipe",
+                "url": "flame-on/misc/cursive-recipe.svg"
+            },
+            {
+                "type": "image",
+                "key": "cursive-waiting",
+                "url": "flame-on/misc/cursive-waiting.svg"
+            },
+            {
+                "type": "image",
+                "key": "misc-circle-bg",
+                "url": "flame-on/misc/misc-circle-bg.svg"
+            },
+            {
+                "type": "image",
+                "key": "misc-top-ui-bg",
+                "url": "flame-on/misc/misc-top-ui-bg.svg"
+            },
+            {
+                "type": "image",
+                "key": "recipe-bondi",
+                "url": "flame-on/misc/recipe-bondi.webp"
+            },
+            {
+                "type": "image",
+                "key": "recipe-haloumi",
+                "url": "flame-on/misc/recipe-haloumi.webp"
+            },
+            {
+                "type": "image",
+                "key": "recipe-haloumi",
+                "url": "flame-on/misc/recipe-haloumi.webp"
+            },
+            {
+                "type": "image",
+                "key": "recipe-otropo",
+                "url": "flame-on/misc/recipe-otropo.webp"
+            },
+            {
+                "type": "image",
+                "key": "",
+                "url": "flame-on/misc/"
+            },
+            {
+                "type": "image",
+                "key": "recipe-vege",
+                "url": "flame-on/misc/recipe-vege.webp"
+            },
+            {
+                "type": "image",
+                "key": "title-flame-on",
+                "url": "flame-on/misc/title-flame-on.svg"
+            },
+            {
+                "type": "image",
+                "key": "title-logo",
+                "url": "flame-on/misc/title-logo.svg"
+            },
+            {
+                "type": "image",
+                "key": "title-win-friends",
+                "url": "flame-on/misc/title-win-friends.svg"
+            }
+        ]
+    }
+}
