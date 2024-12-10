@@ -6,7 +6,7 @@ import { StartGame } from './main';
   selector: 'app-game-fo',
   standalone: true,
   imports: [],
-  template: '<div id="game-container"></div>'
+  templateUrl: './game-fo.component.html'
 })
 export class GameFOComponent implements OnInit {
 

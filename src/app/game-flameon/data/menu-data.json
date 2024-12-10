@@ -1,37 +1,67 @@
 {
     "menuItems": [
       {
-        "id": "peri-chicken",
-        "name": "Peri Peri Chicken",
+        "id": "bondi",
+        "name": "Bondi Burger",
         "ingredientScore": 220,
         "finishScore": 440, 
-        "extraValid": [0, 1, 0],
+        "extraValid": [0, 1, 1, 1, 0],
         "ingredients": [
           "burg-top",
+          "burg-cheese",
           "burg-chicken",
+          "burg-lettuce",
           "burg-bottom"
         ]
       },
       {
-        "id": "peri-chicken-etc",
-        "name": "Peri Chicken Etc",
+        "id": "haloumi",
+        "name": "Haloumi Burger",
+        "ingredientScore": 220,
+        "finishScore": 440,
+        "extraValid": [0, 1, 1, 1, 0],
+        "ingredients": [
+          "burg-top",
+          "burg-haloumi",
+          "burg-chicken",
+          "burg-lettuce",
+          "burg-bottom"
+        ]
+      },
+      {
+        "id": "vege",
+        "name": "Vege Burger",
         "ingredientScore": 220,
         "finishScore": 440,
         "extraValid": [0, 1, 1, 1, 1, 0],
         "ingredients": [
           "burg-top",
-          "burg-sauce",
-          "burg-lettuce",
           "burg-cheese",
-          "burg-chicken",
+          "burg-vege",
+          "burg-tomato",
+          "burg-lettuce",
+          "burg-bottom"
+        ]
+      },
+      {
+        "id": "otropo",
+        "name": "Otropo Burger",
+        "ingredientScore": 220,
+        "finishScore": 440,
+        "extraValid": [0, 1, 1, 1, 1, 1, 0],
+        "ingredients": [
+          "burg-top",
+          "burg-cheese",
+          "burg-pineapple",
+          "burg-bacon",
+          "burg-chiecken",
+          "burg-lettuce",
           "burg-bottom"
         ]
       }
     ],
     "extraItems": [
-      "extra-cdrom",
-      "extra-ninjastar",
-      "extra-rubberduck"
+      "extra-rubberchicken"
     ]
   }
   

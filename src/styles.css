@@ -3,3 +3,13 @@ body {
     background-color: black;
     color: grey;
 }
+
+@font-face {
+    font-family: "PortuguesaCaps";
+    src: url('assets/fonts/Portuguesa Caps.otf');
+}
+
+@font-face {
+    font-family: "PortuguesaScript";
+    src: url('assets/fonts/Portuguesa Script.otf');
+}

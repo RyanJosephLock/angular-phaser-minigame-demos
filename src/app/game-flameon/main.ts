@@ -1,7 +1,7 @@
 import { Game } from 'phaser';
 
 import Load from './scenes/load';
-import Start from './scenes/start';
+import Splash from './scenes/splash';
 import Hud from './scenes/hud';
 import Build1Next from './scenes/build1-next';
 import Build2Recipe from './scenes/build2-recipe';
@@ -9,8 +9,8 @@ import Build3Play from './scenes/build3-play';
 import End from './scenes/end';
 
 const config: Phaser.Types.Core.GameConfig = {
-    width: 420,
-    height: 749,
+    width: 1080,
+    height: 1920,
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -29,10 +29,10 @@ const config: Phaser.Types.Core.GameConfig = {
             }
         } // matter world config: https://docs.phaser.io/api-documentation/typedef/types-physics-matter
     },
-    backgroundColor: '#000',
+    backgroundColor: '#FFF',
     scene: [
         Load,
-        Start,
+        Splash,
         Build1Next,
         Build2Recipe,
         Build3Play,

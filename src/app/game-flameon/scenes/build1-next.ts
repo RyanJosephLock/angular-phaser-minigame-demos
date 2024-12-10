@@ -1,18 +1,20 @@
 import Phaser from 'phaser';
 
 import { Homework, Task } from "../model/homework";
-import BuildManager from '../game/build-manager';
-
+import { Menu, Item } from "../model/menu";
+import MenuData from "../data/menu-data.json";
 
 export default class Build1Next extends Phaser.Scene {
-    private homework!: Homework;
-    public buildManager!: BuildManager;
+    private menu!: Menu;
 
     constructor() {
         super({ key: 'build1-next' });
     }
 
     create() {
+        // import data
+        this.menu = MenuData;
+
         // run experience
         this.startHomeworkTask();
     } 
@@ -21,8 +23,11 @@ export default class Build1Next extends Phaser.Scene {
         const nextTask = this.selectNextTask();
 
         if (nextTask) {
-            // set nextTask in registry and start scene
+            // lookup menu item for next task
+            const nextMenuItem = this.menu.menuItems.find(item => item.id === nextTask.id) as Item;
+            // set registry and start scene
             this.registry.set('nextTask', nextTask);
+            this.registry.set('nextMenuIem', nextMenuItem);
             this.scene.start('build2-recipe');
         } else {
             // go to end if tasks complete

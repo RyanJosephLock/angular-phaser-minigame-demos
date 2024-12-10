@@ -1,19 +1,15 @@
 {
     "tasks": [
       {
-        "id": "peri-chicken",
+        "id": "bondi",
         "isDone": false
       },
       {
-        "id": "peri-chicken-etc",
+        "id": "vege",
         "isDone": false
       },
       {
-        "id": "peri-chicken",
-        "isDone": false
-      },
-      {
-        "id": "peri-chicken-etc",
+        "id": "otropo",
         "isDone": false
       }
     ]
