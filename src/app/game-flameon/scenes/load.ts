@@ -6,7 +6,6 @@ export default class Load extends Phaser.Scene {
     }
 
     preload() {
-        this.load.pack('img', 'game-xp/assets/burg/burg-asset-pack.json', 'img');
         this.load.pack('misc', 'flame-on/pack-misc.json', 'misc');
         this.load.pack('ing', 'flame-on/pack-ing.json', 'ing');
     }

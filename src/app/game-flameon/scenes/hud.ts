@@ -28,7 +28,7 @@ export default class Hud extends Phaser.Scene {
         // hud text
         hudContainer.add(this.add.text(width / 2 + 120, 50, `SCORE`, { fontFamily: 'PortuguesaCaps', fontSize: '55px', color: '#FFF' }).setAngle(-4));
         hudContainer.add(this.add.text(width / 2 + 130, 230, `HEAT`, { fontFamily: 'PortuguesaCaps', fontSize: '55px', color: '#FFF' }).setAngle(-4));
-        this.txtScoreVal = this.add.text(width / 2 + 110, 80, `000`, { fontFamily: 'PortuguesaCaps', fontSize: '155px', color: '#FFF' }).setAngle(-4);
+        this.txtScoreVal = this.add.text(width / 2 + 110, 80, `0`, { fontFamily: 'PortuguesaCaps', fontSize: '155px', color: '#FFF' }).setAngle(-4);
         hudContainer.add(this.txtScoreVal);
         this.countdownText = this.add.text(width / 2, 400, `time left ${this.countdown}`, { fontFamily: 'PortuguesaCaps', fontSize: '75px', color: '#323843' }).setOrigin(0.5, 0.5);
 

@@ -3,58 +3,58 @@
         "files": [
             {
                 "type": "image",
-                "key": "bacon",
-                "url": "flame-on/ing/BACON.png"
+                "key": "burg-bacon",
+                "url": "flame-on/ing/burg-bacon.png"
             },
             {
                 "type": "image",
-                "key": "bottom",
-                "url": "flame-on/ing/BOTTOM.png"
+                "key": "burg-bottom",
+                "url": "flame-on/ing/burg-bottom.png"
             },
             {
                 "type": "image",
-                "key": "cheese",
-                "url": "flame-on/ing/CHEESE.png"
+                "key": "burg-cheese",
+                "url": "flame-on/ing/burg-cheese.png"
             },
             {
                 "type": "image",
-                "key": "chicken",
-                "url": "flame-on/ing/CHICKEN.png"
+                "key": "burg-chicken",
+                "url": "flame-on/ing/burg-chicken.png"
             },
             {
                 "type": "image",
-                "key": "haloumi",
-                "url": "flame-on/ing/HALOUMI.png"
+                "key": "burg-haloumi",
+                "url": "flame-on/ing/burg-haloumi.png"
             },
             {
                 "type": "image",
-                "key": "lettuce",
-                "url": "flame-on/ing/LETTTUCE.png"
+                "key": "burg-lettuce",
+                "url": "flame-on/ing/burg-lettuce.png"
             },
             {
                 "type": "image",
-                "key": "pineapple",
-                "url": "flame-on/ing/PINEAPPLE.png"
+                "key": "burg-pineapple",
+                "url": "flame-on/ing/burg-pineapple.png"
             },
             {
                 "type": "image",
-                "key": "tomato",
-                "url": "flame-on/ing/TOMATO.png"
+                "key": "burg-tomato",
+                "url": "flame-on/ing/burg-tomato.png"
             },
             {
                 "type": "image",
-                "key": "top",
-                "url": "flame-on/ing/TOP.png"
+                "key": "burg-top",
+                "url": "flame-on/ing/burg-top.png"
             },
             {
                 "type": "image",
-                "key": "toy",
-                "url": "flame-on/ing/TOY.png"
+                "key": "burg-vege",
+                "url": "flame-on/ing/burg-vege.png"
             },
             {
                 "type": "image",
-                "key": "vege",
-                "url": "flame-on/ing/VEGE.png"
+                "key": "extra-toy",
+                "url": "flame-on/ing/extra-toy.png"
             }
         ]
     }

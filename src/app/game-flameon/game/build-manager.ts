@@ -21,8 +21,6 @@ export default class BuildManager {
     private ingredientGroup!: Phaser.GameObjects.Group;
     private scoreBanked: number = 0;
 
-    private contentX!: number;
-    private contentY!: number;
     private width!: number;
     private height!: number;
 
@@ -40,8 +38,6 @@ export default class BuildManager {
         const { width, height } = this.scene.scale;
         this.width = width;
         this.height = height;
-        this.contentX = this.width / 2;
-        this.contentY = 100;
 
         // set stage
         this.setStage();
@@ -58,14 +54,18 @@ export default class BuildManager {
     // BUILD OBJECTS
 
     private setStage() {
-        // set title
-        this.menuItemTitle = this.scene.add.text(this.contentX, this.contentY, '')
-            .setOrigin(0.5, 0.5);
+        // add background
+        this.scene.add.image(0, 0, 'all-bg-high').setOrigin(0, 0);
+        this.scene.add.image(this.width / 2, 840, 'build-tap-area').setOrigin(0.5, 0.5);
+        this.scene.add.image(this.width / 2, 640, 'button-make').setOrigin(0.5, 0.5);
+        
+        
+
+        // set menu item name
+        this.menuItemTitle = this.scene.add.text(this.width / 2, 500, ``, { fontFamily: 'PortuguesaCaps', fontSize: '120px', color: '#323843' }).setOrigin(0.5, 0.5);
 
         // set cycleImage
-        this.cycleImage = this.scene.add.image(this.contentX, this.contentY + 60, '')
-            .setScale(0.5, 0.5)
-            .setActive(false);
+        this.cycleImage = this.scene.add.image(this.width / 2, 860, '').setAlpha(0).setActive(false);
         
         // set cycleClick
         this.clickBody = this.scene.add.rectangle(0, 0, this.width, this.height)
@@ -77,7 +77,7 @@ export default class BuildManager {
         this.ingredientGroup = this.scene.add.group();
             
         // set base
-        this.scene.matter.add.rectangle( this.contentX, this.height - 40, this.width, 80, {
+        this.scene.matter.add.rectangle(this.width / 2, this.height - 100, this.width, 200, {
             isStatic: true
             }) as MatterJS.BodyType;
 
@@ -129,6 +129,9 @@ export default class BuildManager {
     private rotateTurnArr(): void {
         this.cycleStopRotate = false;
         let i = 0;
+        // set initial texture
+        this.cycleImage.setTexture(this.menuItemTurn[1]);
+        // cycle textures
         const cycleNextIngredient = () => {
             i++;
             if (this.cycleStopRotate) {
@@ -137,16 +140,41 @@ export default class BuildManager {
             if (i === this.menuItemTurn.length) {
                 i = 0;
             }
-            this.cycleImage.setTexture(this.menuItemTurn[i]);
+            this.scene.tweens.chain({
+                targets: this.cycleImage,
+                tweens: [
+                    {
+                        y: 840,
+                        duration: 100,
+                        ease: 'Quint.easeInOut'
+                    },
+                    {
+                        y: 890,
+                        duration: 100,
+                        ease: 'Quint.easeOut',
+                        alpha: 0.5,
+                        onComplete: () => {
+                            this.cycleImage.setTexture(this.menuItemTurn[i]);
+                        }
+                    },
+                    {
+                        y: 870,
+                        duration: 100,
+                        ease: 'Quint.easeInOut',
+                        alpha: 1
+                    }
+
+                 ]
+            });
+
             this.scene.time.delayedCall(this.menuItemTurnRotateDelay, cycleNextIngredient);
-            
         };
         cycleNextIngredient();
     }
 
     private selectIngredientEvent(textureKey: string): void {
         const isCorrect = this.checkAnswer(textureKey);
-        this.dropIngredient(this.contentX, this.contentY + 60, textureKey, isCorrect);
+        this.dropIngredient(this.width / 2, 860, textureKey, isCorrect);
         this.goToNextTurn(isCorrect);
     }
     
@@ -162,18 +190,19 @@ export default class BuildManager {
     private dropIngredient(x: number, y: number, texture: string, isCorrect: boolean): void {
         const image = this.scene.matter.add.image(x, y, texture, undefined, {
             frictionAir: 0,
-            restitution: 1.5
-        })
-        .setName(texture)
-            .setScale(0.5, 0.5)
+            restitution: 1.5,
+            shape: {type: 'rectangle', x: 0, y: 20, width: 800, height: 70 }
+            })
+            .setName(texture)
             .setData({ 'type': 'ingredient', 'isCorrect': isCorrect });
-            this.ingredientGroup.add(image);
         
-            // add collider to active ingredient (manually pass 'this' context)
-            const sceneRef = this.scene as Build2Play
-            image.setOnCollide(this.handleActiveIngCollision.bind(sceneRef.buildManager));
-            
-        }
+        this.ingredientGroup.add(image);
+        
+        // add collider to active ingredient (manually pass 'this' context)
+        const sceneRef = this.scene as Build2Play
+        image.setOnCollide(this.handleActiveIngCollision.bind(sceneRef.buildManager));
+        
+    }
 
     private goToNextTurn(isCorrect: boolean): void {
         // hide rotateTurnArr on select
@@ -230,8 +259,8 @@ export default class BuildManager {
         }
 
         // show and animate result image
-        const resultTextTemp = this.scene.add.text(this.contentX, this.contentY + 60, resultObj.textureKey).setOrigin(0.5, 0.5);
-        const resultImage = this.scene.add.image(this.contentX, this.contentY + 100, resultObj.textureKey);
+        const resultTextTemp = this.scene.add.text(this.width / 2, 860, resultObj.textureKey).setOrigin(0.5, 0.5);
+        const resultImage = this.scene.add.image(this.width / 2, 860, resultObj.textureKey);
 
         // next steps
         this.scene.time.delayedCall(this.menuItemResultDelay, () => {    
@@ -278,9 +307,9 @@ export default class BuildManager {
                 : 0;
             const positionVec2 = new Phaser.Math.Vector2(positionX, this.height);
             const randomXVelocity = direction 
-                ? Phaser.Math.Between(-1.5, -1.0)
-                : Phaser.Math.Between(1.0, 1.5);
-            const randomYVelocity = Phaser.Math.Between(-2, -2); 
+                ? Phaser.Math.Between(-5, -10)
+                : Phaser.Math.Between(5, 10);
+            const randomYVelocity = Phaser.Math.Between(-10, -10); 
             const forceVec2 = new Phaser.Math.Vector2(randomXVelocity, randomYVelocity);
         
             // apply the force with a delay (currently no delay between indexs)

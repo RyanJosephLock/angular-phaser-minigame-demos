@@ -15,7 +15,7 @@ export default class Build2Play extends Phaser.Scene {
     init() {
         this.buildManager = new BuildManager(this);
 
-        // listen for coundownEnd
+        // listen for coundownEnd                   TO DO: Should this be on the HUD so that it works across all build scenes?
         this.events.on('countdownEnd', () => {
             this.events.emit('hideHud');
             this.scene.start('end');
