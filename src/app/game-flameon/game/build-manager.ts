@@ -138,54 +138,16 @@ export default class BuildManager {
             if (i === this.menuItemTurn.length) {
                 i = 0;
             }
-            const cycleImageTween = this.scene.tweens.chain({
-                targets: this.cycleImage,
-                tweens: [
-                    {
-                        y: 840,
-                        duration: 100,
-                        ease: 'Quint.easeInOut',
-                        onStart: () => {
-                            // stop mid tween
-                            if (this.cycleStopRotate && cycleImageTween) {
-                                cycleImageTween.destroy();
-                                this.cycleImage.setAlpha(0);
-                            }
-                        }
-                    },
-                    {
-                        y: 890,
-                        duration: 100,
-                        ease: 'Quint.easeOut',
-                        alpha: 0.5,
-                        onStart: () => {
-                            // stop mid tween
-                            if (this.cycleStopRotate && cycleImageTween) {
-                                cycleImageTween.destroy();
-                                this.cycleImage.setAlpha(0);
-                            }
-                            // change image
-                            this.cycleImage.setTexture(this.menuItemTurn[i]);
-                        }
-                    },
-                    {
-                        y: 870,
-                        duration: 100,
-                        ease: 'Quint.easeInOut',
-                        alpha: 1,
-                        onStart: () => {
-                            // stop mid tween
-                            if (this.cycleStopRotate && cycleImageTween) {
-                                cycleImageTween.destroy();
-                                this.cycleImage.setAlpha(0);
-                            }
-                        }
-                    }
-
-                 ]
-            });
-
-            this.scene.time.delayedCall(this.menuItemTurnRotateDelay, cycleNextIngredient);
+            if (!this.cycleStopRotate) {
+                this.cycleImage.setTexture(this.menuItemTurn[i]).setAlpha(1);
+                this.scene.add.tween({
+                    targets: this.cycleImage,
+                    y: this.cycleImage.y + 15,
+                    duration: 100,
+                    yoyo: true
+                })
+                this.scene.time.delayedCall(this.menuItemTurnRotateDelay, cycleNextIngredient);
+            }
         };
         cycleNextIngredient();
     }
