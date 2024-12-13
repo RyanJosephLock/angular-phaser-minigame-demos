@@ -19,7 +19,7 @@ export default class BuildManager {
     private cycleImage!: Phaser.GameObjects.Image;
     private cycleStopRotate: Boolean = false;
     private ingredientGroup!: Phaser.GameObjects.Group;
-    private scoreBanked: number = 0;
+    private maxHeat: number = 4;
 
     private width!: number;
     private height!: number;
@@ -58,8 +58,6 @@ export default class BuildManager {
         this.scene.add.image(0, 0, 'all-bg-high').setOrigin(0, 0);
         this.scene.add.image(this.width / 2, 840, 'build-tap-area').setOrigin(0.5, 0.5);
         this.scene.add.image(this.width / 2, 640, 'button-make').setOrigin(0.5, 0.5);
-        
-        
 
         // set menu item name
         this.menuItemTitle = this.scene.add.text(this.width / 2, 500, ``, { fontFamily: 'PortuguesaCaps', fontSize: '120px', color: '#323843' }).setOrigin(0.5, 0.5);
@@ -113,7 +111,7 @@ export default class BuildManager {
 
     // turn array of ingredients to cycle through
     private createTurnArr(answerKey: string): void {
-        // add extra wrong answers exc correct answer)
+        // add extra wrong answers, excluding correct answer
         const menuItemExtrasCopy = this.menuItemExtras.filter(item => item !== answerKey);
         for (let i = 0; i < this.menuItemTurnCount - 1; i++) {
             const randomIndexExtras = Math.floor(Math.random() * menuItemExtrasCopy.length);
@@ -140,13 +138,20 @@ export default class BuildManager {
             if (i === this.menuItemTurn.length) {
                 i = 0;
             }
-            this.scene.tweens.chain({
+            const cycleImageTween = this.scene.tweens.chain({
                 targets: this.cycleImage,
                 tweens: [
                     {
                         y: 840,
                         duration: 100,
-                        ease: 'Quint.easeInOut'
+                        ease: 'Quint.easeInOut',
+                        onStart: () => {
+                            // stop mid tween
+                            if (this.cycleStopRotate) {
+                                cycleImageTween.destroy();
+                                this.cycleImage.setAlpha(0);
+                            }
+                        }
                     },
                     {
                         y: 890,
@@ -154,6 +159,12 @@ export default class BuildManager {
                         ease: 'Quint.easeOut',
                         alpha: 0.5,
                         onComplete: () => {
+                            // stop mid tween
+                            if (this.cycleStopRotate) {
+                                cycleImageTween.destroy();
+                                this.cycleImage.setAlpha(0);
+                            }
+                            // change image
                             this.cycleImage.setTexture(this.menuItemTurn[i]);
                         }
                     },
@@ -161,7 +172,14 @@ export default class BuildManager {
                         y: 870,
                         duration: 100,
                         ease: 'Quint.easeInOut',
-                        alpha: 1
+                        alpha: 1,
+                        onStart: () => {
+                            // stop mid tween
+                            if (this.cycleStopRotate) {
+                                cycleImageTween.destroy();
+                                this.cycleImage.setAlpha(0);
+                            }
+                        }
                     }
 
                  ]
@@ -180,6 +198,7 @@ export default class BuildManager {
     
     private checkAnswer(textureKey: string): boolean {
         if (this.menuItemAnswers[0] === textureKey) {
+            // remove correctly answered item 
             this.menuItemAnswers.shift();
             return true;
         } else {
@@ -208,59 +227,130 @@ export default class BuildManager {
         // hide rotateTurnArr on select
         this.toggleCycleImageSelector(false);
 
-        // emit corrent score
-        if (isCorrect) {
-            const ingredientScore = this.menuItem.ingredientScore;
-            this.emitScoreAdjustEvent(ingredientScore);
-            this.scoreBanked += ingredientScore;
+        // check if passed score baseline
+        let scoreBaselinePassed!: boolean;
+        const scoreBaselinePrevious = this.scene.registry.get('scoreBaselinePrevious')  || -1;
+        const scoreBaseline = this.scene.registry.get('scoreBaseline') || 0;
+        if (scoreBaselinePrevious <= scoreBaseline) {
+            scoreBaselinePassed = true;
         } else {
-            this.emitScoreAdjustEvent(-this.scoreBanked);
-            this.scoreBanked = 0;
+            scoreBaselinePassed = false;
         }
 
         let resultObj = { 
             'type': '', 
+            'text': '',
+            'textPos': 0,
             'textureKey': '',
+            'textureKeyPos': 0,
             'nextFunc': () => {}
         };
 
         // set result type
-        if (this.menuItemAnswers.length != 0 && isCorrect) {
+        if (this.menuItemAnswers.length != 0 && isCorrect && scoreBaselinePassed) {
             resultObj = {
-               'type': 'correct', 
-                'textureKey': 'splash-correct',
+                'type': 'correct',
+                'text': `+${this.menuItem.ingredientScore}`,
+                'textPos': 120,
+                'textureKey': 'build-answer-right',
+                'textureKeyPos': -250,
                 'nextFunc': () => {
+                    // add score
+                    const ingredientScore = this.menuItem.ingredientScore;
+                    this.emitScoreAdjustEvent(ingredientScore);
+                    // increment score baseline
+                    this.incrementScoreBaseline(scoreBaseline);
+                    // build next turn
                     this.menuItemTurn = [];
                     this.toggleCycleImageSelector(true);
                     this.createBuildTurn();
                 }
             };
-        } else if (!isCorrect) {
+        } else if (this.menuItemAnswers.length != 0 && isCorrect && !scoreBaselinePassed) {
             resultObj = {
-                'type': 'wrong', 
-                 'textureKey': 'splash-wrong',
-                 'nextFunc': () => {
-                     this.menuItemTurn = [];
-                     this.scene.scene.start('build2-recipe');
-                 }
+                'type': 'redo',
+                'text': `+20`,
+                'textPos': 100,
+                'textureKey': 'build-answer-redo',
+                'textureKeyPos': -200,
+                'nextFunc': () => {
+                    // add score
+                    this.emitScoreAdjustEvent(20);
+                    // increment score baseline
+                    this.incrementScoreBaseline(scoreBaseline);
+                    // build next turn
+                    this.menuItemTurn = [];
+                    this.toggleCycleImageSelector(true);
+                    this.createBuildTurn();
+                }
+            };
+        } else if (!isCorrect) {  
+            resultObj = {
+                'type': 'wrong',
+                'text': '',
+                'textPos': 0,
+                'textureKey': 'build-answer-wrong',
+                'textureKeyPos': 0,
+                'nextFunc': () => {
+                    // record score baseline and reset
+                    this.scene.registry.set('scoreBaselinePrevious', scoreBaseline);
+                    this.scene.registry.set('scoreBaseline', 0);
+                    // go back to recipe
+                    this.menuItemTurn = [];
+                    this.scene.scene.start('build2-recipe');
+                    
+                }
              };
         } else {
             resultObj = {
-                'type': 'done', 
-                 'textureKey': 'splash-done',
-                 'nextFunc': () => {
-                     this.menuItemTurn = [];
-                     this.scene.scene.start('build1-next');
-                     this.emitScoreAdjustEvent(this.menuItem.finishScore);
-                     this.scoreBanked = 0;
-                     this.emitLevelAdjustEvent();
-                 }
+                'type': 'done',
+                'text': `+${this.menuItem.finishScore}`,
+                'textPos': 120,
+                'textureKey': 'build-answer-done',
+                'textureKeyPos': -250,
+                'nextFunc': () => {
+                    this.menuItemTurn = [];
+                    this.scene.scene.start('build1-next');
+                    this.emitScoreAdjustEvent(this.menuItem.finishScore);
+                    this.emitHeatAdjustEvent();
+                    // reset score baseline and previous baseline
+                    this.scene.registry.set('scoreBaseline', 0);
+                    this.scene.registry.set('scoreBaselinePrevious', 0);
+                }
              }; 
         }
 
         // show and animate result image
-        const resultTextTemp = this.scene.add.text(this.width / 2, 860, resultObj.textureKey).setOrigin(0.5, 0.5);
-        const resultImage = this.scene.add.image(this.width / 2, 860, resultObj.textureKey);
+        const resultTextTemp = this.scene.add.text(this.width / 2 + resultObj.textPos, 860, resultObj.text, { fontFamily: 'PortuguesaCaps', fontSize: '280px', color: '#BC0410' })
+            .setOrigin(0.5, 0.7)
+            .setScale(2)
+            .setRotation(0.3)
+            .setAlpha(0);
+        const resultImage = this.scene.add.image(this.width / 2 + resultObj.textureKeyPos, 860, resultObj.textureKey)
+            .setOrigin(0.5, 0.5)
+            .setScale(2)
+            .setRotation(-0.3)
+            .setAlpha(0);
+
+        this.scene.add.tween({
+            targets: resultImage,
+            delay: 0,
+            alpha: 1,
+            scale: 1,
+            rotation: 0,
+            duration: 200,
+            ease: 'Bounce.easeOut'
+        });
+
+        this.scene.add.tween({
+            targets: resultTextTemp,
+            delay: 250,
+            alpha: 1,
+            scale: 1,
+            rotation: 0,
+            duration: 200,
+            ease: 'Bounce.easeOut'
+        });
 
         // next steps
         this.scene.time.delayedCall(this.menuItemResultDelay, () => {    
@@ -292,7 +382,6 @@ export default class BuildManager {
         if (gameObjectB.data.values['type'] === 'ingredient' && !gameObjectB.data.values['isCorrect']) {
             this.explodeIngredients();
         }
-
     }
 
     private explodeIngredients(): void {  
@@ -319,7 +408,12 @@ export default class BuildManager {
                     this.resetIngredients();
                 });
             });
-
+        });
+        this.scene.add.tween({
+            targets: ingredientImages,
+            alpha: 0,
+            delay: 200,
+            duration: 200
         });
     }
 
@@ -335,19 +429,26 @@ export default class BuildManager {
     }
 
     private emitScoreAdjustEvent(scoreAdjust: number): void {
+        console.log(this.scene.registry.getAll());
         this.scene.events.emit('scoreAdjust', scoreAdjust);
-        if (scoreAdjust > 0) {
-            // happy visuals
-        } else if (scoreAdjust < 0) {
-            // sad visuals
+    }
+
+    private emitHeatAdjustEvent(): void {
+        let heat = this.scene.registry.get('heat') || 1;
+        if (heat < this.maxHeat) {
+            // decrease rotation delay by 80%
+            this.menuItemTurnRotateDelay *= 0.8;
+            this.scene.registry.set('menuItemTurnRotateDelay', this.menuItemTurnRotateDelay);
+            // increment heat
+            heat++;
+            this.scene.registry.set('heat', heat);
+            this.scene.events.emit('heatAdjust', heat);
         }
     }
 
-    private emitLevelAdjustEvent(): void {
-        this.scene.events.emit('levelAdjust');
-        // decrease rotation delay by 70%
-        this.menuItemTurnRotateDelay *= 0.7;
-        this.scene.registry.set('menuItemTurnRotateDelay', this.menuItemTurnRotateDelay);
+    private incrementScoreBaseline(scoreBaseline: number): void {
+        scoreBaseline++;
+        this.scene.registry.set('scoreBaseline', scoreBaseline);
     }
     
 }

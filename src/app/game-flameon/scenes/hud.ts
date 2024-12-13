@@ -5,9 +5,9 @@ import AlignGrid from './../game/align-grid';
 export default class Hud extends Phaser.Scene {
     txtScoreVal!: Phaser.GameObjects.Text;
     score: number = 0;
-    level: number = 1;
     countdownText!: Phaser.GameObjects.Text;
     countdown: number = 60;
+    width!: number
 
     constructor(scene: Phaser.Scene) {
         super({ key: 'hud' });
@@ -16,13 +16,13 @@ export default class Hud extends Phaser.Scene {
     create() {
         // canvas dimensions
         const { width, height } = this.scale;
+        this.width = width;
         
         // hud container
         const hudContainer = this.add.container().setPosition(0, -400);
 
         // add images to container
         hudContainer.add(this.add.image(0, 0, 'misc-top-ui-bg').setOrigin(0.5, 0).setPosition(width / 2, -100));
-        hudContainer.add(this.add.image(0, 0, 'chilli-pepper').setOrigin(0.5, 0).setPosition(width / 2 + 280, 210));
         this.add.image(0, 0, 'title-logo').setOrigin(1, 1).setPosition(width - 10, height).setScale(0.55);
 
         // hud text
@@ -37,7 +37,10 @@ export default class Hud extends Phaser.Scene {
             targets: hudContainer,
             y: 0,
             duration: 1000, 
-            ease: 'Quad.easeInOut'
+            ease: 'Quad.easeInOut',
+            onComplete: () => {
+                this.addChilliHeatIcon(1);
+            } 
         });
 
         // init score registry (avoid undefined 0 score)
@@ -49,11 +52,18 @@ export default class Hud extends Phaser.Scene {
             this.score += scoreAdjust;
             this.txtScoreVal.setText(`${this.score}`);
             this.registry.set('score', this.score);
+            this.add.tween({
+                targets: this.txtScoreVal,
+                y: this.txtScoreVal.y + 10,
+                yoyo: true,
+                duration: 100
+            });
         });
 
-        // level adjust event listener
-        playScene.events.on('levelAdjust', () => {
-            this.level ++;
+        // heat adjust event listener
+        playScene.events.on('heatAdjust', (heat: number) => {
+            this.addChilliHeatIcon(heat);
+            console.log(`heat ${heat}`);
         });
 
         // hide hud event listener
@@ -84,4 +94,23 @@ export default class Hud extends Phaser.Scene {
         this.time.delayedCall(1000, countdownTick);
     }
 
+    private addChilliHeatIcon(heat: number): void {
+        const posAdjX = (heat - 1) * 40;
+        const posAdjY = (heat - 1) * 2;
+        const imgChilli = this.add.image(0, 0, 'chilli-pepper')
+            .setOrigin(0.5, 0)
+            .setPosition(this.width / 2 + 280 + posAdjX, 210 - posAdjY)
+            .setAlpha(0)
+            .setRotation(0.3)
+            .setScale(3);
+        this.add.tween({
+            targets: imgChilli,
+            alpha: 1,
+            rotation: 0,
+            scale: 1,
+            duration: 400,
+            ease: 'Bounce.easeOut'
+        })
+    }
+    
 }

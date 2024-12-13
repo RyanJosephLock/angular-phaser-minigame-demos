@@ -43,7 +43,7 @@ export default class Build1Next extends Phaser.Scene {
         if (nextTask) {
             // mark nextTask as done
             nextTask.isDone = true;
-            this.registry.set('homeowrk', homework);
+            this.registry.set('homework', homework);
             return nextTask;
         } else {
             return null

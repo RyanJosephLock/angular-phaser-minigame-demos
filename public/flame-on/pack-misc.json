@@ -18,6 +18,16 @@
             },
             {
                 "type": "image",
+                "key": "build-answer-redo",
+                "url": "flame-on/misc/build-answer-redo.png"
+            },
+            {
+                "type": "image",
+                "key": "build-answer-done",
+                "url": "flame-on/misc/build-answer-done.png"
+            },
+            {
+                "type": "image",
                 "key": "build-tap-area",
                 "url": "flame-on/misc/build-tap-area.png"
             },

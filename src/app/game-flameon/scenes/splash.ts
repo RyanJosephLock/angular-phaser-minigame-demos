@@ -31,11 +31,19 @@ export default class Splash extends Phaser.Scene {
         var gridConfig = { 'scene': this, 'cols': 11, 'rows': 11 }
         this.aGrid = new AlignGrid(gridConfig);
 
-        // hide hud (TO DO: WHY NOT WORKING? LIKELY RACE COND)
+        // hide hud
         this.events.emit('hideHud');
 
+        // add bg image
+        this.add.image(0, 0, 'all-bg-high').setOrigin(0, 0);
+        
+        // set cycleClick
+        this.add.rectangle(0, 0, this.width, this.height)
+            .setOrigin(0, 0)
+            .setInteractive()
+            .on('pointerdown', () => {this.startGame()});
+
         // add images to map
-        this.images.set('bg', this.add.image(0, 0, 'all-bg-high').setOrigin(0, 0));
         this.images.set('circle', this.add.image(0, 0, 'misc-circle-bg').setOrigin(0.5, 0.5));
         this.images.set('logo', this.add.image(0, 0, 'title-logo').setOrigin(0.5, 0.5));
         this.images.set('flameon', this.add.image(0, 0, 'title-flame-on').setOrigin(0.5, 0.5));
@@ -90,7 +98,7 @@ export default class Splash extends Phaser.Scene {
                 this.startGame();
             });
         }
-
+    
         // start timer and text
         let startCount = 10;
         const textStartCount = this.add.text(0, 0, `or starting in ${startCount}`, { fontFamily: 'PortuguesaCaps', fontSize: '55px', color: '#000' }).setOrigin(0.5, 0.5);
