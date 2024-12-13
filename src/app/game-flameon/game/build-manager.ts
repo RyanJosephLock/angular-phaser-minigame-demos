@@ -147,7 +147,7 @@ export default class BuildManager {
                         ease: 'Quint.easeInOut',
                         onStart: () => {
                             // stop mid tween
-                            if (this.cycleStopRotate) {
+                            if (this.cycleStopRotate && cycleImageTween) {
                                 cycleImageTween.destroy();
                                 this.cycleImage.setAlpha(0);
                             }
@@ -158,9 +158,9 @@ export default class BuildManager {
                         duration: 100,
                         ease: 'Quint.easeOut',
                         alpha: 0.5,
-                        onComplete: () => {
+                        onStart: () => {
                             // stop mid tween
-                            if (this.cycleStopRotate) {
+                            if (this.cycleStopRotate && cycleImageTween) {
                                 cycleImageTween.destroy();
                                 this.cycleImage.setAlpha(0);
                             }
@@ -175,7 +175,7 @@ export default class BuildManager {
                         alpha: 1,
                         onStart: () => {
                             // stop mid tween
-                            if (this.cycleStopRotate) {
+                            if (this.cycleStopRotate && cycleImageTween) {
                                 cycleImageTween.destroy();
                                 this.cycleImage.setAlpha(0);
                             }
