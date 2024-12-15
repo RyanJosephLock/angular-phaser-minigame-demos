@@ -1,7 +1,5 @@
 import Phaser from 'phaser';
 
-import AlignGrid from './../game/align-grid';
-
 export default class Hud extends Phaser.Scene {
     txtScoreVal!: Phaser.GameObjects.Text;
     score: number = 0;
@@ -66,9 +64,9 @@ export default class Hud extends Phaser.Scene {
             console.log(`heat ${heat}`);
         });
 
-        // hide hud event listener
-        playScene.events.on('hideHud', () => {
-            this.scene.setVisible(false);
+        // game complete listener
+        this.events.on('gameComplete', () => {
+            this.goToEndScene();
         });
 
         // timer
@@ -78,20 +76,28 @@ export default class Hud extends Phaser.Scene {
     private countdownInit(): void {
         const countdownTick = () => {
             this.countdown--;
-            this.countdownText.setText(`time left  ${this.countdown}`);
-            if (this.countdown > 0) {
-                this.time.delayedCall(1000, countdownTick);
-            } else {
-                // stop all scenes and go to end
-                this.scene
-                    .stop('splash')
-                    .stop('build1-next')
-                    .stop('build2-recipe')
-                    .stop('build3-play')
-                    .start('end');
+            if (this.countdown <= 0) {
+                this.registry.set('completeMessage', 'Time Up!');
+                this.events.emit('gameComplete');
+                return;
+            } else if (this.countdown <= 10) {
+                this.countdownText.setColor('#BC0410').setScale(1.1);
             }
+            this.countdownText.setText(`time left  ${this.countdown}`);
+            this.time.delayedCall(1000, countdownTick);
         };
         this.time.delayedCall(1000, countdownTick);
+    }
+
+    private goToEndScene(): void {
+        // stop all scenes and go to end
+        this.countdownText.destroy();
+        this.scene
+            .stop('splash')
+            .stop('build1-next')
+            .stop('build2-recipe')
+            .stop('build3-play')
+            .launch('end');
     }
 
     private addChilliHeatIcon(heat: number): void {
@@ -110,7 +116,7 @@ export default class Hud extends Phaser.Scene {
             scale: 1,
             duration: 400,
             ease: 'Bounce.easeOut'
-        })
+        });
     }
     
 }

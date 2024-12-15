@@ -31,8 +31,8 @@ export default class Build1Next extends Phaser.Scene {
             this.scene.start('build2-recipe');
         } else {
             // go to end if tasks complete
-            this.events.emit('hideHud');
-            this.scene.start('end');
+            this.registry.set('completeMessage', 'All Done!');
+            this.scene.get('hud').events.emit('gameComplete');
         }
     }
     

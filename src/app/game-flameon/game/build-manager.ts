@@ -55,7 +55,7 @@ export default class BuildManager {
 
     private setStage() {
         // add background
-        this.scene.add.image(0, 0, 'all-bg-high').setOrigin(0, 0);
+        this.scene.add.image(this.width / 2, 0, 'all-bg-high').setOrigin(0.5, 0);
         this.scene.add.image(this.width / 2, 840, 'build-tap-area').setOrigin(0.5, 0.5);
         this.scene.add.image(this.width / 2, 640, 'button-make').setOrigin(0.5, 0.5);
 
@@ -120,8 +120,6 @@ export default class BuildManager {
         // add correct answer
         const randomIndexAnswer = Math.floor(Math.random() * this.menuItemTurn.length);
         this.menuItemTurn.splice(randomIndexAnswer, 0, answerKey);
-        console.log(`Turn: ${this.menuItemTurn}`);           // TESTING ONLY
-        console.log(`Answer: ${this.menuItemAnswers[0]}`);   // TESTING ONLY
     }
 
     private rotateTurnArr(): void {
@@ -358,9 +356,9 @@ export default class BuildManager {
                 : 0;
             const positionVec2 = new Phaser.Math.Vector2(positionX, this.height);
             const randomXVelocity = direction 
-                ? Phaser.Math.Between(-5, -10)
-                : Phaser.Math.Between(5, 10);
-            const randomYVelocity = Phaser.Math.Between(-10, -10); 
+                ? Phaser.Math.Between(-2, -4)
+                : Phaser.Math.Between(2, 4);
+            const randomYVelocity = Phaser.Math.Between(-1, -3); 
             const forceVec2 = new Phaser.Math.Vector2(randomXVelocity, randomYVelocity);
         
             // apply the force with a delay (currently no delay between indexs)
@@ -374,7 +372,7 @@ export default class BuildManager {
         this.scene.add.tween({
             targets: ingredientImages,
             alpha: 0,
-            delay: 200,
+            delay: 300,
             duration: 200
         });
     }

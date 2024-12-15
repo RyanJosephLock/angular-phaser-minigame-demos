@@ -3,11 +3,6 @@
         "files": [
             {
                 "type": "image",
-                "key": "all-bg-high",
-                "url": "flame-on/misc/all-bg-high.jpg"
-            },
-            {
-                "type": "image",
                 "key": "build-answer-right",
                 "url": "flame-on/misc/build-answer-right.png"
             },
@@ -60,6 +55,11 @@
                 "type": "image",
                 "key": "misc-circle-bg",
                 "url": "flame-on/misc/misc-circle-bg.png"
+            },
+            {
+                "type": "image",
+                "key": "misc-circle-shadow",
+                "url": "flame-on/misc/misc-circle-shadow.png"
             },
             {
                 "type": "image",

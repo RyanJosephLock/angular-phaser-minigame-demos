@@ -25,7 +25,7 @@ export default class Build1Recipe extends Phaser.Scene {
         console.log(JSON.stringify(this.registry.getAll())); // TESTING ONLY
 
         // add background
-        this.add.image(0, 0, 'all-bg-high').setOrigin(0, 0);
+        this.add.image(width / 2, 0, 'all-bg-high').setOrigin(0.5, 0);
 
         // recipe container
         const recipeContainer = this.add.container().setAlpha(0);
@@ -35,6 +35,8 @@ export default class Build1Recipe extends Phaser.Scene {
         recipeContainer.add(btnRemember);
         const imgCircle = this.add.image(width / 2, 1200, 'misc-circle-bg').setOrigin(0.5, 0.5);
         recipeContainer.add(imgCircle);
+        const imgCircleShadow = this.add.image(width / 2, 1730, 'misc-circle-shadow').setOrigin(0.5, 0.5);
+        recipeContainer.add(imgCircleShadow);
         recipeContainer.add(this.add.image(width / 2, 1630, 'cursive-recipe').setOrigin(0.5, 0.5));
         const imgRecipe = this.add.image(width / 2, 1200, `recipe-${this.nextTask.id}`).setOrigin(0.5, 0.5);
         recipeContainer.add(imgRecipe);

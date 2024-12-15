@@ -5,17 +5,10 @@ import AlignGrid from './../game/align-grid';
 export default class Splash extends Phaser.Scene {
     private aGrid!: AlignGrid;
     private gridConfig!: {};
-
+    private images: Map<string, Phaser.GameObjects.Image> = new Map();
     private width!: number;
     private height!: number;
-    
-    private titleFlameOn!: Phaser.GameObjects.Image;
-    private allBg!: Phaser.GameObjects.Image;
-    private circleBg!: Phaser.GameObjects.Image;
-    private logo!: Phaser.GameObjects.Image;
-    private titleWin!: Phaser.GameObjects.Image;
 
-    private images: Map<string, Phaser.GameObjects.Image> = new Map();
 
     constructor() {
         super({ key: 'splash' });
@@ -31,11 +24,8 @@ export default class Splash extends Phaser.Scene {
         var gridConfig = { 'scene': this, 'cols': 11, 'rows': 11 }
         this.aGrid = new AlignGrid(gridConfig);
 
-        // hide hud
-        this.events.emit('hideHud');
-
         // add bg image
-        this.add.image(0, 0, 'all-bg-high').setOrigin(0, 0);
+        this.add.image(width / 2, 0, 'all-bg-high').setOrigin(0.5, 0);
         
         // set cycleClick
         this.add.rectangle(0, 0, this.width, this.height)
@@ -44,18 +34,18 @@ export default class Splash extends Phaser.Scene {
             .on('pointerdown', () => {this.startGame()});
 
         // add images to map
-        this.images.set('circle', this.add.image(0, 0, 'misc-circle-bg').setOrigin(0.5, 0.5));
-        this.images.set('logo', this.add.image(0, 0, 'title-logo').setOrigin(0.5, 0.5));
-        this.images.set('flameon', this.add.image(0, 0, 'title-flame-on').setOrigin(0.5, 0.5));
-        this.images.set('win', this.add.image(0, 0, 'title-win-friends').setOrigin(0.5, 0.5));
-        this.images.set('start', this.add.image(0, 0, 'button-start').setOrigin(0.5, 0.5));
+        this.images.set('circle', this.add.image(width / 2, 600, 'misc-circle-bg').setOrigin(0.5, 0.5));
+        this.images.set('logo', this.add.image(width / 2, 410, 'title-logo').setOrigin(0.5, 0.5));
+        this.images.set('flameon', this.add.image(width / 2, 680, 'title-flame-on').setOrigin(0.5, 0.5));
+        this.images.set('win', this.add.image(width / 2, 1320, 'title-win-friends').setOrigin(0.5, 0.5));
+        this.images.set('start', this.add.image(width / 2, 1600, 'button-start').setOrigin(0.5, 0.5));
 
         // position on grid
-        this.aGrid.placeAt(5, 3, this.images.get('circle'));
-        this.aGrid.placeAt(5, 3, this.images.get('logo'), undefined, -200);
-        this.aGrid.placeAt(5, 3, this.images.get('flameon'), undefined, 80);
-        this.aGrid.placeAt(5, 7, this.images.get('win'), undefined, -20);
-        this.aGrid.placeAt(5, 9, this.images.get('start'), undefined, -40);
+        // this.aGrid.placeAt(5, 3, this.images.get('circle'));
+        // this.aGrid.placeAt(5, 3, this.images.get('logo'), undefined, -200);
+        // this.aGrid.placeAt(5, 3, this.images.get('flameon'), undefined, 80);
+        // this.aGrid.placeAt(5, 7, this.images.get('win'), undefined, -20);
+        // this.aGrid.placeAt(5, 9, this.images.get('start'), undefined, -40);
 
         // animation
         this.tweens.add({
@@ -68,7 +58,7 @@ export default class Splash extends Phaser.Scene {
         this.tweens.add({
             targets: this.images.get('flameon'),
             y: objy + 40,
-            duration: 1000, 
+            duration: 1000,
             ease: 'Quad.easeInOut',
             yoyo: true,
             repeat: -1 
@@ -101,8 +91,8 @@ export default class Splash extends Phaser.Scene {
     
         // start timer and text
         let startCount = 10;
-        const textStartCount = this.add.text(0, 0, `or starting in ${startCount}`, { fontFamily: 'PortuguesaCaps', fontSize: '55px', color: '#000' }).setOrigin(0.5, 0.5);
-        this.aGrid.placeAt(5, 9, textStartCount, undefined, 50);
+        const textStartCount = this.add.text(width / 2, 1700, `or starting in ${startCount}`, { fontFamily: 'PortuguesaCaps', fontSize: '55px', color: '#000' }).setOrigin(0.5, 0.5);
+        // this.aGrid.placeAt(5, 9, textStartCount, undefined, 50);
 
         const startCountTick = () => {
             startCount--;

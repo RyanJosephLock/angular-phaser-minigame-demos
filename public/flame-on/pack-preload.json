@@ -1,0 +1,16 @@
+{
+    "preload": {
+        "files": [
+            {
+                "type": "image",
+                "key": "all-bg-high",
+                "url": "flame-on/preload/all-bg-high.jpg"
+            },
+            {
+                "type": "image",
+                "key": "loading",
+                "url": "flame-on/preload/loading.png"
+            }
+        ]
+    }
+}

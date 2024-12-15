@@ -1,0 +1,25 @@
+{
+    "players": [
+        {
+        "id": "ae1bbc69-ed24-4829-ac52-7644b0c1fa4a",
+        "name": "Ryan",
+        "isLocalPlayer": true
+        },
+        {
+        "id": "e9b92f47-4fdd-4427-a600-2f999db47f8e",
+        "name": "Gillian",
+        "isLocalPlayer": true
+        },
+        {
+        "id": "9ce456b7-e113-4f2d-ae86-9ea4a51d85a4",
+        "name": "Eva",
+        "isLocalPlayer": true
+        },
+        {
+        "id": "86c44577-5820-4b88-9107-0bd021075f9e",
+        "name": "Matthew",
+        "isLocalPlayer": true
+        }
+    ]
+}
+
