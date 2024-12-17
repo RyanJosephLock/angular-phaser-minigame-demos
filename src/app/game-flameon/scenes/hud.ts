@@ -1,6 +1,9 @@
 import Phaser from 'phaser';
 
+import AlignGrid from './../game/align-grid';
+
 export default class Hud extends Phaser.Scene {
+    private aGrid!: AlignGrid;
     txtScoreVal!: Phaser.GameObjects.Text;
     score: number = 0;
     countdownText!: Phaser.GameObjects.Text;
@@ -15,6 +18,8 @@ export default class Hud extends Phaser.Scene {
         // canvas dimensions
         const { width, height } = this.scale;
         this.width = width;
+        const gridConfig = { 'scene': this, 'cols': 11, 'rows': 16, 'width': width, 'height': height }
+        this.aGrid = new AlignGrid(gridConfig);
         
         // hud container
         const hudContainer = this.add.container().setPosition(0, -400);
@@ -28,7 +33,10 @@ export default class Hud extends Phaser.Scene {
         hudContainer.add(this.add.text(width / 2 + 130, 230, `HEAT`, { fontFamily: 'PortuguesaCaps', fontSize: '55px', color: '#FFF' }).setAngle(-4));
         this.txtScoreVal = this.add.text(width / 2 + 110, 80, `0`, { fontFamily: 'PortuguesaCaps', fontSize: '155px', color: '#FFF' }).setAngle(-4);
         hudContainer.add(this.txtScoreVal);
-        this.countdownText = this.add.text(width / 2, 400, `time left ${this.countdown}`, { fontFamily: 'PortuguesaCaps', fontSize: '75px', color: '#323843' }).setOrigin(0.5, 0.5);
+        this.countdownText = this.add.text(0, 0, `time left ${this.countdown}`, { fontFamily: 'PortuguesaCaps', fontSize: '75px', color: '#323843' }).setOrigin(0.5, 0.5);
+
+        // position on grid
+        this.aGrid.placeAt(5, 4, this.countdownText, undefined, -100);
 
         // container tween entry
         this.tweens.add({

@@ -26,9 +26,9 @@ const config: Phaser.Types.Core.GameConfig = {
             gravity: { y: 6, x: 0 },
             setBounds: {
                 top: false,
-                right: false,
+                right: true,
                 bottom: false,
-                left: false
+                left: true
             }
         }
     },

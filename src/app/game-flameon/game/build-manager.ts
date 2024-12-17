@@ -1,10 +1,13 @@
 import Phaser from "phaser"
 
+import AlignGrid from './../game/align-grid';
 import Build2Play from "../scenes/build3-play";
 import MenuData from "../data/menu-data.json";
 import { Menu, Item } from "../model/menu";
 
 export default class BuildManager {
+    private aGrid!: AlignGrid;
+
     private scene: Phaser.Scene;
     private clickBody!: Phaser.GameObjects.Rectangle;
     private menu!: Menu;
@@ -20,6 +23,7 @@ export default class BuildManager {
     private cycleStopRotate: Boolean = false;
     private ingredientGroup!: Phaser.GameObjects.Group;
     private maxHeat: number = 4;
+    private explodeToggle: boolean = true;
 
     private width!: number;
     private height!: number;
@@ -38,6 +42,8 @@ export default class BuildManager {
         const { width, height } = this.scene.scale;
         this.width = width;
         this.height = height;
+        const gridConfig = { 'scene': this.scene, 'cols': 11, 'rows': 16, 'width': width, 'height': height }
+        this.aGrid = new AlignGrid(gridConfig);
 
         // set stage
         this.setStage();
@@ -56,16 +62,16 @@ export default class BuildManager {
     private setStage() {
         // add background
         this.scene.add.image(this.width / 2, 0, 'all-bg-high').setOrigin(0.5, 0);
-        this.scene.add.image(this.width / 2, 840, 'build-tap-area').setOrigin(0.5, 0.5);
-        this.scene.add.image(this.width / 2, 640, 'button-make').setOrigin(0.5, 0.5);
 
-        // set menu item name
-        this.menuItemTitle = this.scene.add.text(this.width / 2, 500, ``, { fontFamily: 'PortuguesaCaps', fontSize: '120px', color: '#323843' }).setOrigin(0.5, 0.5);
+        // add images and text
+        const buildTapArea = this.scene.add.image(0, 0, 'build-tap-area').setOrigin(0.5, 0.5);
+        const btnMake = this.scene.add.image(0, 0, 'button-make').setOrigin(0.5, 0.5);
+        this.menuItemTitle = this.scene.add.text(0, 0, ``, { fontFamily: 'PortuguesaCaps', fontSize: '120px', color: '#323843' }).setOrigin(0.5, 0.5);
 
         // set cycleImage
-        this.cycleImage = this.scene.add.image(this.width / 2, 860, '').setAlpha(0).setActive(false);
+        this.cycleImage = this.scene.add.image(this.width / 2, 0, '').setAlpha(0).setActive(false);
         
-        // set cycleClick
+        // set tap area
         this.clickBody = this.scene.add.rectangle(0, 0, this.width, this.height)
             .setOrigin(0, 0)
             .setInteractive()
@@ -75,9 +81,16 @@ export default class BuildManager {
         this.ingredientGroup = this.scene.add.group();
             
         // set base
-        this.scene.matter.add.rectangle(this.width / 2, this.height - 100, this.width, 200, {
+        const y = this.aGrid.getY(14);
+        this.scene.matter.add.rectangle(this.width / 2, y, this.width, 200, {
             isStatic: true
             }) as MatterJS.BodyType;
+
+        // align on grid
+        this.aGrid.placeAt(5, 4, this.menuItemTitle);
+        this.aGrid.placeAt(5, 7, buildTapArea);
+        this.aGrid.placeAt(5, 7, this.cycleImage);
+        this.aGrid.placeAt(5, 7, btnMake, undefined, -200);
 
     }
 
@@ -152,7 +165,8 @@ export default class BuildManager {
 
     private selectIngredientEvent(textureKey: string): void {
         const isCorrect = this.checkAnswer(textureKey);
-        this.dropIngredient(this.width / 2, 860, textureKey, isCorrect);
+        const y = this.aGrid.getY(7);
+        this.dropIngredient(this.width / 2, y, textureKey, isCorrect);
         this.goToNextTurn(isCorrect);
     }
     
@@ -281,12 +295,13 @@ export default class BuildManager {
         }
 
         // show and animate result image
-        const resultTextTemp = this.scene.add.text(this.width / 2 + resultObj.textPos, 860, resultObj.text, { fontFamily: 'PortuguesaCaps', fontSize: '280px', color: '#BC0410' })
+        const y = this.aGrid.getY(7);
+        const resultTextTemp = this.scene.add.text(this.width / 2 + resultObj.textPos, y, resultObj.text, { fontFamily: 'PortuguesaCaps', fontSize: '280px', color: '#BC0410' })
             .setOrigin(0.5, 0.7)
             .setScale(2)
             .setRotation(0.3)
             .setAlpha(0);
-        const resultImage = this.scene.add.image(this.width / 2 + resultObj.textureKeyPos, 860, resultObj.textureKey)
+        const resultImage = this.scene.add.image(this.width / 2 + resultObj.textureKeyPos, y, resultObj.textureKey)
             .setOrigin(0.5, 0.5)
             .setScale(2)
             .setRotation(-0.3)
@@ -339,7 +354,8 @@ export default class BuildManager {
         const gameObjectB = bodyB.gameObject as Phaser.GameObjects.GameObject;
 
         // if answer wrong, explode on collision
-        if (gameObjectB.data.values['type'] === 'ingredient' && !gameObjectB.data.values['isCorrect']) {
+        if (gameObjectB.data.values['type'] === 'ingredient' && !gameObjectB.data.values['isCorrect'] && this.explodeToggle) {
+            this.explodeToggle = false; // stops multiple explosions
             this.explodeIngredients();
         }
     }
@@ -356,13 +372,19 @@ export default class BuildManager {
                 : 0;
             const positionVec2 = new Phaser.Math.Vector2(positionX, this.height);
             const randomXVelocity = direction 
-                ? Phaser.Math.Between(-2, -4)
-                : Phaser.Math.Between(2, 4);
-            const randomYVelocity = Phaser.Math.Between(-1, -3); 
+                ? Phaser.Math.Between(-0, -0.5)
+                : Phaser.Math.Between(0, 0.5);
+            const randomYVelocity = Phaser.Math.Between(-7, -10); 
             const forceVec2 = new Phaser.Math.Vector2(randomXVelocity, randomYVelocity);
         
             // apply the force with a delay (currently no delay between indexs)
             this.scene.time.delayedCall(index * 0, () => {
+
+                // remove restitution bounce
+                const imageMjsBody = imageMjs.body as MatterJS.BodyType;
+                imageMjsBody.restitution = 0;
+
+                // explode
                 imageMjs.applyForceFrom(positionVec2, forceVec2);
                 this.scene.time.delayedCall(500, () => {
                     this.resetIngredients();
@@ -378,7 +400,7 @@ export default class BuildManager {
     }
 
     private resetIngredients(): void {
-        // rest group
+        // reset group
         this.ingredientGroup.clear(true, true);
         // reset answers
         this.createIngredientAnswers();

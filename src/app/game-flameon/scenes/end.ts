@@ -1,7 +1,10 @@
 import Phaser from 'phaser';
 
+import AlignGrid from './../game/align-grid';
+
 export default class End extends Phaser.Scene {
-    playerText!: Phaser.GameObjects.Text;
+    private aGrid!: AlignGrid;
+    private playerText!: Phaser.GameObjects.Text;
 
     constructor() {
         super({ key: 'end' });
@@ -9,6 +12,8 @@ export default class End extends Phaser.Scene {
 
     create() {
         const {width, height} = this.scale;
+        const gridConfig = { 'scene': this, 'cols': 11, 'rows': 16, 'width': width, 'height': height }
+        this.aGrid = new AlignGrid(gridConfig);
 
         // add bg image
         this.add.image(width / 2, 0, 'all-bg-high').setOrigin(0.5, 0);
@@ -21,11 +26,19 @@ export default class End extends Phaser.Scene {
             .setAlpha(0);
         const circle = this.add.image(width / 2, 1100, 'misc-circle-bg')
             .setOrigin(0.5, 0.5);
-        this.add.image(width / 2, 1730, 'misc-circle-shadow').setOrigin(0.5, 0.5);    
-        this.add.image(width / 2, 900, 'cursive-waiting')
+        const shadow = this.add.image(width / 2, 1730, 'misc-circle-shadow').setOrigin(0.5, 0.5);    
+        const waiting = this.add.image(width / 2, 900, 'cursive-waiting')
             .setOrigin(0.5, 0.5);
         this.playerText = this.add.text(width / 2, 1050, '', { fontFamily: 'PortuguesaCaps', fontSize: '80px', color: '#323843', align: 'center' })
-            .setOrigin(0.5, 0)
+            .setOrigin(0.5, 0);
+
+        // align on grid
+        this.aGrid.placeAt(5, 4, completeMessageText);
+        this.aGrid.placeAt(5, 9, circle);
+        this.aGrid.placeAt(5, 9, waiting, undefined, -220);
+        this.aGrid.placeAt(5, 9, this.playerText, undefined, -80);
+        this.aGrid.placeAt(5, 14, shadow);
+
 
         // add animation
         this.add.tween({

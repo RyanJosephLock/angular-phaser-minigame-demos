@@ -62,7 +62,7 @@ export default class AlignGrid {
     }
 
     // place an object in relation to the grid
-    placeAt(xx: number, yy: number, obj: Phaser.GameObjects.Image | Phaser.GameObjects.Text | undefined, adjx: number = 0, adjy: number = 0) {
+    public placeAt(xx: number, yy: number, obj: Phaser.GameObjects.Image | Phaser.GameObjects.Text | undefined, adjx: number = 0, adjy: number = 0) {
         // calculate the center of the cell
         // by adding half of the height and width
         // to the x and y of the coordinates
@@ -71,6 +71,11 @@ export default class AlignGrid {
         x2 += adjx;
         y2 += adjy;
         obj?.setPosition(x2, y2);
+    }
+
+    public getY(yy: number): number {
+        let y = this.ch * yy + this.ch / 2;
+        return y;
     }
 
 }
