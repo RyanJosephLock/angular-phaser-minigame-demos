@@ -34,18 +34,18 @@ export default class Build1Recipe extends Phaser.Scene {
         // add objects
         this.objMap.set('menu-item-name', this.add.text(0, 0, `${this.registry.get('nextMenuIem').name}`, { fontFamily: 'PortuguesaCaps', fontSize: '120px', color: '#323843' }).setOrigin(0.5, 0.5));
         this.objMap.set('circle', this.add.image(0, 0, 'misc-circle-bg').setOrigin(0.5, 0.5));
-        this.objMap.set('button-remember', this.add.image(width / 2, 630, 'button-remember').setOrigin(0.5, 0.5));
         this.objMap.set('circle-shadow', this.add.image(width / 2, 1730, 'misc-circle-shadow').setOrigin(0.5, 0.5));
         this.objMap.set('cursive-recipe', this.add.image(width / 2, 1630, 'cursive-recipe').setOrigin(0.5, 0.5));
         this.objMap.set('recipe', this.add.image(width / 2, 1200, `recipe-${this.nextTask.id}`).setOrigin(0.5, 0.5));
+        this.objMap.set('button-remember', this.add.image(width / 2, 630, 'button-remember').setOrigin(0.5, 0.5));
 
         // position on grid
         this.aGrid.placeAt(5, 4, this.objMap.get('menu-item-name'));
         this.aGrid.placeAt(5, 4, this.objMap.get('button-remember'), undefined, 130);
-        this.aGrid.placeAt(5, 9, this.objMap.get('circle'));
-        this.aGrid.placeAt(5, 9, this.objMap.get('circle-shadow'), undefined, 600);
-        this.aGrid.placeAt(5, 9, this.objMap.get('cursive-recipe'), undefined, 475);
-        this.aGrid.placeAt(5, 9, this.objMap.get('recipe'));
+        this.aGrid.placeAt(5, 10, this.objMap.get('circle'));
+        this.aGrid.placeAt(5, 10, this.objMap.get('circle-shadow'), undefined, 600);
+        this.aGrid.placeAt(5, 10, this.objMap.get('cursive-recipe'), undefined, 475);
+        this.aGrid.placeAt(5, 10, this.objMap.get('recipe'));
 
         // recipe container
         const recipeContainer = this.add.container().setAlpha(0);
